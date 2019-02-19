@@ -602,6 +602,9 @@ angular.module("IdraPlatform").controller('CatalogueCtrl',['$scope','$http','con
 			case 'JUNAR':	
 				node.federationLevel='LEVEL_2';
 				break;
+			case 'OPENDATASOFT':
+				node.federationLevel='LEVEL_2';
+				break;
 			default:
 				break;
 			}
