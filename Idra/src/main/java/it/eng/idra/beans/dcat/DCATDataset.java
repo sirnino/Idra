@@ -17,6 +17,7 @@
  ******************************************************************************/
 package it.eng.idra.beans.dcat;
 
+import it.eng.idra.beans.evaluation.DatasetEval;
 import it.eng.idra.cache.CacheContentType;
 import it.eng.idra.management.FederationCore;
 import it.eng.idra.utils.CommonUtil;
@@ -121,6 +122,8 @@ public class DCATDataset implements Serializable {
 	private FOAFAgent rightsHolder;
 	private FOAFAgent creator;
 	private List<SKOSConceptSubject> subject;
+	
+	private DatasetEval datasetEvaluation = new DatasetEval();
 
 //	private String legacyIdentifier;
 //	private String seoIdentifier;
@@ -801,7 +804,14 @@ public class DCATDataset implements Serializable {
 	 * nodeID Alternatively is used otherIdentifier + nodeID
 	 */
 
-	
+	@Transient
+	public DatasetEval getDatasetEvaluation() {
+		return datasetEvaluation;
+	}
+	@Transient
+	public void setDatasetEvaluation(DatasetEval datasetEvaluation) {
+		this.datasetEvaluation = datasetEvaluation;
+	}
 
 	@Override
 	public boolean equals(Object obj) {

@@ -104,7 +104,7 @@
 				<label class="control-label">{{ 'showResultFound' | translate}}:</label>
 				<h4 style="display: inline;"><strong>{{totalItems}}</strong></h4>
 		</div>
-	<div class="row" style="margin: 0px 0px 10px 0px; padding-top: 0px;" ng-show="selectedFacets.length!=0">
+		<div class="row" style="margin: 0px 0px 10px 0px; padding-top: 0px;" ng-show="selectedFacets.length!=0">
 						<md-chips ng-model='selectedFacets' md-removable="true"
 							readonly="true" md-on-remove="getDatasetByFacet($chip.search_parameter,$chip.value,$chip.display_value,true)">
 						<md-chip-template> <strong>{{$chip.display_value}}</strong>
@@ -115,12 +115,100 @@
 				<md-card class="md-whiteframe-3dp"
 					ng-repeat="dataset in visualDataset.dataset track by $index"
 					md-theme-watch style="width:100%;margin: 0px 0px 8px 0px"> 
+					<div class="evaluation" >
+			   	        <md-menu md-position-mode="target-right target">
+					      <md-button md-no-ink aria-label="Open menu with custom trigger" ng-click="$mdMenu.open()" class="md-button quality-text-{{dataset.datasetEvaluation.datasetLevel}} text-lowercase">
+					        {{evaluationVerdict(dataset.datasetEvaluation) | translate}}
+					        <md-tooltip md-direction="top">{{'evalClick' | translate}}</md-tooltip>
+					      </md-button>
+					      <md-menu-content width="6" ng-mouseleave="$mdMenu.close()">
+								<md-menu-item md-colors="{background: 'accent'}">
+									<h4>{{'DatasetEvaluation'| translate}}: <strong>{{evaluationVerdict(dataset.datasetEvaluation) | translate}}</strong></h4>
+								</md-menu-item>
+					        	<md-menu-item>
+			          				    <!-- EVALUATION INDEX -->
+		       								<div class="evaluation semantic-index">
+									            <div class="evaluation-title ">{{'semantic' | translate}}</div>
+									            <div class="evaluation-value">
+									              <div class="evaluation-bar">
+									                  <div class="evaluation-bar-value quality-bar-value-{{dataset.datasetEvaluation.semanticLevel}}"></div>
+									              </div>
+									              <span class="evaluation-number quality-text-{{dataset.datasetEvaluation.semanticLevel}}">{{dataset.datasetEvaluation.semanticLevel}}</span>
+									            </div>
+									        </div>
+							          	<!-- EVALUATION INDEX END-->
+							     </md-menu-item>
+							     <md-menu-divider></md-menu-divider>
+							     <md-menu-item>
+							          	<!-- EVALUATION INDEX -->
+							          		<div class="evaluation format-index">
+							            		<div class="evaluation-title">{{'format' | translate}}</div>
+							            		<div class="evaluation-value">
+							              			<div class="evaluation-bar">
+							                  			<div class="evaluation-bar-value quality-bar-value-{{dataset.datasetEvaluation.formatLevel}}"></div>
+							              			</div>
+							              			<span class="evaluation-number quality-text-{{dataset.datasetEvaluation.formatLevel}}">{{dataset.datasetEvaluation.formatLevel}}</span>
+							            		</div>
+							          		</div>
+							          	<!-- EVALUATION INDEX END-->
+							    </md-menu-item>
+							    <md-menu-divider></md-menu-divider>
+							    <md-menu-item>
+							          	<!-- EVALUATION INDEX -->
+							          		<div class="evaluation int-index">
+							            		<div class="evaluation-title">{{'internationalization' | translate}}</div>
+							            		<div class="evaluation-value">
+							              			<div class="evaluation-bar">
+							                  			<div class="evaluation-bar-value quality-bar-value-{{dataset.datasetEvaluation.internationalityLevel}}"></div>
+							              			</div>
+							              			<span class="evaluation-number quality-text-{{dataset.datasetEvaluation.internationalityLevel}}">{{dataset.datasetEvaluation.internationalityLevel}}</span>
+							            		</div>
+							          		</div>
+							          	<!-- EVALUATION INDEX END-->
+							    </md-menu-item>
+							    <md-menu-divider></md-menu-divider>
+							    <md-menu-item>
+							          	<!-- EVALUATION INDEX -->
+							          		<div class="evaluation resources-index">
+								            	<div class="evaluation-title">{{'resources' | translate}}</div>
+								            	<div class="evaluation-value">
+								              		<div class="evaluation-bar">
+								                  		<div class="evaluation-bar-value quality-bar-value-{{dataset.datasetEvaluation.resourceAvgLevel}}"></div>
+								              		</div>
+								              		<span class="evaluation-number quality-text-{{dataset.datasetEvaluation.resourceAvgLevel}}">{{dataset.datasetEvaluation.resourceAvgLevel}}</span>
+								            	</div>
+							          		</div>
+							          <!-- EVALUATION INDEX END-->
+							    </md-menu-item>
+							    <md-menu-divider></md-menu-divider>
+							    <md-menu-item>
+							          <!-- EVALUATION INDEX -->
+							          		<div class="evaluation update-index last-index">
+							            		<div class="evaluation-title" ng-class="{'quality-text-0' : dataset.datasetEvaluation.updateLevel == 0}">{{'updateIdx' | translate}}</div>
+							            		<div class="evaluation-value">
+							              			<div class="evaluation-bar">
+							                  			<div class="evaluation-bar-value quality-bar-value-{{dataset.datasetEvaluation.updateLevel}}"></div>
+							              			</div>
+							              			<span class="evaluation-number quality-text-{{dataset.datasetEvaluation.updateLevel}}">{{dataset.datasetEvaluation.updateLevel}}</span>
+							            		</div>
+							          		</div>
+							          <!-- EVALUATION INDEX END-->
+					        	</md-menu-item>
+					      </md-menu-content>
+					    </md-menu>
+			
+				          <a class="md-icon-button md-button md-ink-ripple hide-xs hide-sm" type="button" ng-href="#/datasetEvaluation" aria-label="Info" aria-hidden="false">
+				          	<md-tooltip md-direction="top">{{'viewEval' | translate}}</md-tooltip>
+							<i class="mdi-action-info"></i>
+				          </a>
+			        </div>
 				<md-card-title style="padding-top: 5px;padding-bottom: 2px;">
-				<md-card-title-text md-truncate > 
-				<h4 md-truncate class="md-headline" style="margin: 0px 0px 0px 0px; font-size:16px">
-				<a href="javascript:void(0)" ng-click="openDatasetDetails(dataset)" ng-bind-html="dataset.title"></a></h4> 
-				<span class="md-subhead" style="color: #6a6b68; padding-top:0px; font-size: 12px;" ><strong>{{getRealName(dataset.nodeID)}}</strong></span>
-				</md-card-title-text> </md-card-title> 
+					<md-card-title-text md-truncate > 
+					<h4 md-truncate class="md-headline" style="margin: 0px 0px 0px 0px; font-size:16px">
+					<a href="javascript:void(0)" ng-click="openDatasetDetails(dataset)" ng-bind-html="dataset.title"></a></h4> 
+					<span class="md-subhead" style="color: #6a6b68; padding-top:0px; font-size: 12px;" ><strong>{{getRealName(dataset.nodeID)}}</strong></span>
+					</md-card-title-text> 
+				</md-card-title> 
 				<md-card-content style="padding-bottom:8px">
 					<p md-truncate style="line-height: 1.75em; margin-bottom:0px">
 						<span ng-if="dataset.description!='' && dataset.description!=undefined" >{{dataset.tmpDesc}}</span>

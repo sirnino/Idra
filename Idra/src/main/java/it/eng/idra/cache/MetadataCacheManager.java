@@ -25,12 +25,15 @@ import java.time.LocalTime;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 import java.util.Map.Entry;
-
+import java.util.Optional;
 import java.util.stream.Collectors;
+
 import javax.persistence.EntityExistsException;
 import javax.persistence.RollbackException;
 
@@ -47,13 +50,13 @@ import org.apache.solr.common.SolrException;
 import org.apache.solr.core.CoreContainer;
 import org.eclipse.rdf4j.repository.RepositoryException;
 import org.eclipse.rdf4j.rio.RDFParseException;
-
 import org.apache.logging.log4j.*;
 import org.apache.commons.lang3.StringUtils;
 
 import it.eng.idra.beans.ODFProperty;
 import it.eng.idra.beans.dcat.DCATDataset;
 import it.eng.idra.beans.dcat.DCATDistribution;
+import it.eng.idra.beans.evaluation.DatasetEval;
 import it.eng.idra.beans.exception.DatasetNotFoundException;
 import it.eng.idra.beans.odms.ODMSCatalogue;
 import it.eng.idra.beans.odms.ODMSCatalogueState;
@@ -62,6 +65,7 @@ import it.eng.idra.beans.orion.OrionCatalogueConfiguration;
 import it.eng.idra.beans.orion.OrionDistributionConfig;
 import it.eng.idra.beans.search.SearchFacetsList;
 import it.eng.idra.beans.search.SearchResult;
+import it.eng.idra.evaluation.Evaluator;
 import it.eng.idra.management.ODMSManager;
 import it.eng.idra.management.StatisticsManager;
 import it.eng.idra.search.EuroVocTranslator;
@@ -548,10 +552,30 @@ public class MetadataCacheManager {
 		SolrDocumentList docs = rsp.getResults();
 		Long count = docs.getNumFound();
 
+		Map<Integer, Set<String>> datasetIDs = new HashMap<Integer, Set<String>>();
+		
 		// Collect resulting datasets
 		for (SolrDocument doc : docs) {
+			
+			Integer nodeid = Integer.parseInt(doc.getFieldValue("nodeID").toString());
+			if(!datasetIDs.containsKey(nodeid)){
+				datasetIDs.put(nodeid, new HashSet<String>());
+			}
+			Set<String> datasetsForNode = datasetIDs.get(nodeid);
+			datasetsForNode.add(doc.getFieldValue("id").toString());
+			
 			DCATDataset d = DCATDataset.docToDataset(doc);
 			resultDatasets.add(d);
+		}
+		
+		Optional<String> optEvalEnabled = Optional.ofNullable(PropertyManager.getProperty(ODFProperty.EVALUATION_ENABLED));
+		boolean evaluationEnabled = optEvalEnabled.isPresent() && Boolean.parseBoolean(optEvalEnabled.get());
+		if(evaluationEnabled){
+			//Update the dataset evaluations
+			Map<String, DatasetEval> evaluations = Evaluator.getDatasetEvaluationMap(datasetIDs);
+				resultDatasets.forEach(d -> {
+				d.setDatasetEvaluation(evaluations.get(d.getId()));
+			});
 		}
 
 		// Collect resulting facets

@@ -1,0 +1,20 @@
+md-card .evaluation{
+	text-align:right;
+	background-color: #00b4ff; 
+	color: #fff;
+}
+
+md-card .evaluation .quality-text-1{
+	font-weight: bold;
+	color: #f00;
+}
+
+md-card .evaluation .quality-text-2, md-card .evaluation .quality-text-3{
+	font-weight: bold;
+	color: #dfb100;
+}
+
+md-card .evaluation .quality-text-4, md-card .evaluation .quality-text-5{
+	font-weight: bold;
+	color: #080;
+}

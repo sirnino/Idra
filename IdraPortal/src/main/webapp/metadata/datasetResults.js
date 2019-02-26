@@ -17,6 +17,36 @@
  ******************************************************************************/
 angular.module("IdraPlatform").controller('DataSetCtrl',['$scope','$rootScope','$http','config','$anchorScroll','$location','$window','DefaultParameter',function($scope,$rootScope,$http,config,$anchorScroll,$location,$window,DefaultParameter){
 
+	$scope.evaluationVerdict = function(evaluation) {		
+		var evaluationNumber = null;
+		
+		if(evaluation == null || evaluation.datasetLevel == null || evaluation == "null" || evaluation.datasetLevel == "null") return "no evaluation retrieved";
+		
+		if(!( typeof evaluation == "undefined" ||  typeof evaluation.datasetLevel == "undefined")){
+			evaluationNumber = evaluation.datasetLevel;
+		}
+		
+		switch(evaluationNumber) {
+			case 1:
+				return "poor";
+				break;
+			case 2:
+				return "lacking";
+				break;
+			case 3:
+				return "fairlyGood";
+				break;
+			case 4:
+				return "good";
+				break;
+			case 5:
+				return"excellent";
+				break;
+			default:
+				return "notAvailable";
+		}
+	}
+	
 	if($rootScope.foundDatasets == undefined){
 		$window.location.assign('#/metadata');
 		return;
